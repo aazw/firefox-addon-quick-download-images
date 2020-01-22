@@ -2,10 +2,18 @@
 
 Add a button to save the image quickly by 1-click.
 
+![./screenshot.png](./screenshot.png)
+
 ## Motivations
 
 - No Firefox Add-on to save a image with one hand and by 1-click
 - Best usability to save images whiling viewing a page for images
+
+## Functions
+
+- If a IMG tag does not have any A-tagged parent node, add a button per such image, and save the image file indicated by `src` property at click
+- If a IMG tag has the A-tagged parent node but the `href` property is not any image url, add no button to such images
+- If a IMG tag has the A-tagged parent node and the `href` property is an image url, add a button per such image, and save the image file indicated by `href` property at click
 
 ## How to use
 
