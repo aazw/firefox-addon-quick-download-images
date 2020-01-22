@@ -23,7 +23,7 @@ Add a button to save the image quickly by 1-click.
 1. Select the latest version
 1. Click `.xpi` file in Assets section
 
-### Caution
+#### Caution 1
 
 **This add-on is not hosted in official firefox addons page. This github repository is official.**
 
@@ -35,6 +35,6 @@ Add a button to save the image quickly by 1-click.
 1. Click `Load Temporary Add-on` at `Temporary Extensions` section
 1. Select above `firefox-addon.xpi` file
 
-#### Caution
+#### Caution 2
 
 **This add-on is not signed by Firfox Add-on Developer Center. So, please install by your own with debugging mode every time you start.**
