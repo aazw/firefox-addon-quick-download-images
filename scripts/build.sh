@@ -10,6 +10,9 @@ zip ../firefox-addon.xpi \
     manifest.json \
     addon.js \
     background.js \
+    options.css \
+    options.html \
+    options.js \
     images/icon-48.png \
     images/icon-96.png \
     images/save.png

@@ -30,60 +30,83 @@ const imgExtensionsUpperCases = imgExtensions.map(function(x) {
 });
 
 function loadAddon() {
-  let images = document.querySelectorAll("img");
-  if (images.length == 0) {
-    return;
-  }
-
-  images.forEach(element => {
-    // get the target element
-    let target = element;
-    let downloadUrl = element.src;
-
-    // update the target element if it is be wrapped by A tag
-    if (element.parentElement.tagName == "A") {
-      target = element.parentElement;
-
-      // override downloadUrl
-      let extension = target.href.split(".").pop();
-      if (
-        imgExtensions.indexOf(extension) >= 0 ||
-        imgExtensionsUpperCases.indexOf(extension) >= 0
-      ) {
-        // image link
-        downloadUrl = target.href;
-      } else {
-        return;
-      }
+  let storageItem = browser.storage.local.get();
+  storageItem.then(res => {
+    let images = document.querySelectorAll("img");
+    if (images.length == 0) {
+      return;
     }
 
-    // create an image container
-    let imgContainer = document.createElement("div");
+    images.forEach(element => {
+      // get the target element
+      let target = element;
+      let downloadUrl = element.src;
 
-    // add the image container into the parent node of the target element
-    target.parentElement.appendChild(imgContainer);
+      // update the target element if it is be wrapped by A tag
+      if (element.parentElement.tagName == "A") {
+        target = element.parentElement;
 
-    // move the target element to the image container
-    imgContainer.appendChild(target);
+        // override downloadUrl
+        let extension = target.href.split(".").pop();
+        if (
+          imgExtensions.indexOf(extension) >= 0 ||
+          imgExtensionsUpperCases.indexOf(extension) >= 0
+        ) {
+          // image link
+          downloadUrl = target.href;
+        } else {
+          return;
+        }
+      }
 
-    // add an download button overlaying the target element
-    imgContainer.style.display = "inline-block";
-    imgContainer.style.position = "relative";
+      // create an image container
+      let imgContainer = document.createElement("div");
 
-    let overlay = document.createElement("img");
-    overlay.src = browser.extension.getURL("images/save.png");
-    overlay.style.width = "2em";
-    overlay.style.height = "2em";
-    overlay.style.position = "absolute";
-    overlay.style.top = 0;
-    overlay.style.right = 0;
-    overlay.style.cursor = "pointer";
-    overlay.style.backgroundColor = "rgba(0, 0, 0, .1)";
-    overlay.addEventListener("click", function() {
-      browser.runtime.sendMessage({ url: downloadUrl });
+      // add the image container into the parent node of the target element
+      target.parentElement.appendChild(imgContainer);
+
+      // move the target element to the image container
+      imgContainer.appendChild(target);
+
+      // add an download button overlaying the target element
+      imgContainer.style.display = "inline-block";
+      imgContainer.style.position = "relative";
+
+      // download func
+      let downloadFunc = function() {
+        browser.runtime.sendMessage({ url: downloadUrl });
+      };
+
+      if (res.topRightButton) {
+        // top right
+        let overlay1 = document.createElement("img");
+        overlay1.src = browser.extension.getURL("images/save.png");
+        overlay1.style.width = "2em";
+        overlay1.style.height = "2em";
+        overlay1.style.position = "absolute";
+        overlay1.style.right = 0;
+        overlay1.style.top = 0;
+        overlay1.style.cursor = "pointer";
+        overlay1.style.backgroundColor = "rgba(0, 0, 0, .1)";
+        overlay1.addEventListener("click", downloadFunc);
+        imgContainer.appendChild(overlay1);
+      }
+
+      if (res.bottomRightButton) {
+        // bottom right
+        let overlay2 = document.createElement("img");
+        overlay2.src = browser.extension.getURL("images/save.png");
+        overlay2.style.width = "2em";
+        overlay2.style.height = "2em";
+        overlay2.style.position = "absolute";
+        overlay2.style.right = 0;
+        overlay2.style.bottom = 0;
+        overlay2.style.cursor = "pointer";
+        overlay2.style.backgroundColor = "rgba(0, 0, 0, .1)";
+        overlay2.addEventListener("click", downloadFunc);
+        imgContainer.appendChild(overlay2);
+      }
     });
-
-    imgContainer.appendChild(overlay);
   });
 }
 
