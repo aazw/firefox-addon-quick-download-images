@@ -36,6 +36,8 @@ function loadAddon() {
     // init options
     options.topRightButton = typeof options.topRightButton === 'undefined'? true: options.topRightButton;
     options.bottomRightButton = typeof options.bottomRightButton === 'undefined'? true: options.bottomRightButton;
+    options.sizeFilterWitdh = typeof options.sizeFilterWitdh === 'undefined'? 100: options.sizeFilterWitdh;
+    options.sizeFilterHeight = typeof options.sizeFilterHeight === 'undefined'? 100: options.sizeFilterHeight;
 
     // search img tags
     let images = document.querySelectorAll("img");
@@ -47,6 +49,12 @@ function loadAddon() {
       // get the target element
       let target = element;
       let downloadUrl = element.src;
+
+      // filter by size
+      if(target.width < options.sizeFilterWitdh && target.height <  options.sizeFilterHeight) {
+        // skip
+        return
+      }
 
       // update the target element if it is be wrapped by A tag
       if (element.parentElement.tagName == "A") {
