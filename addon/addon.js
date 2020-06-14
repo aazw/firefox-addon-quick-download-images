@@ -29,6 +29,7 @@ const imgExtensionsUpperCases = imgExtensions.map(function(x) {
   return x.toUpperCase();
 });
 
+// add-on implementation
 function loadAddon() {
   browser.storage.local.get().then(options => {
 
@@ -36,6 +37,7 @@ function loadAddon() {
     options.topRightButton = typeof options.topRightButton === 'undefined'? true: options.topRightButton;
     options.bottomRightButton = typeof options.bottomRightButton === 'undefined'? true: options.bottomRightButton;
 
+    // search img tags
     let images = document.querySelectorAll("img");
     if (images.length == 0) {
       return;
