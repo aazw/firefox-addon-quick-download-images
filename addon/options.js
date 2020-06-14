@@ -1,13 +1,12 @@
 function restoreOptions() {
-  let storageItem = browser.storage.local.get();
-  storageItem.then(res => {
+  browser.storage.local.get().then(options => {
     let optionsForm = document.querySelector("#optionsForm");
-    optionsForm.topRightButton.checked =
-      typeof res.topRightButton === "undefined" ? true : res.topRightButton;
-    optionsForm.bottomRightButton.checked =
-      typeof res.bottomRightButton === "undefined"
-        ? true
-        : res.bottomRightButton;
+
+    // top-right button
+    optionsForm.topRightButton.checked = typeof options.topRightButton === "undefined" ? true : options.topRightButton;
+
+    // bottom-right button
+    optionsForm.bottomRightButton.checked = typeof options.bottomRightButton === "undefined" ? true : options.bottomRightButton;
   });
 }
 
