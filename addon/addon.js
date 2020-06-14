@@ -30,8 +30,12 @@ const imgExtensionsUpperCases = imgExtensions.map(function(x) {
 });
 
 function loadAddon() {
-  let storageItem = browser.storage.local.get();
-  storageItem.then(res => {
+  browser.storage.local.get().then(options => {
+
+    // init options
+    options.topRightButton = typeof options.topRightButton === 'undefined'? true: options.topRightButton;
+    options.bottomRightButton = typeof options.bottomRightButton === 'undefined'? true: options.bottomRightButton;
+
     let images = document.querySelectorAll("img");
     if (images.length == 0) {
       return;
@@ -77,7 +81,7 @@ function loadAddon() {
         browser.runtime.sendMessage({ url: downloadUrl });
       };
 
-      if (res.topRightButton) {
+      if (options.topRightButton) {
         // top right
         let overlay1 = document.createElement("img");
         overlay1.src = browser.extension.getURL("images/save.png");
@@ -92,7 +96,7 @@ function loadAddon() {
         imgContainer.appendChild(overlay1);
       }
 
-      if (res.bottomRightButton) {
+      if (options.bottomRightButton) {
         // bottom right
         let overlay2 = document.createElement("img");
         overlay2.src = browser.extension.getURL("images/save.png");
