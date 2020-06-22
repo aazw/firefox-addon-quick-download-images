@@ -13,6 +13,9 @@ function restoreOptions() {
 
     // size filter (height)
     optionsForm.sizeFilterHeight.value = typeof options.sizeFilterHeight === "undefined" ? 100 : options.sizeFilterHeight;
+
+    // lazy load timeout
+    optionsForm.lazyLoadTimeout.value = typeof options.lazyLoadTimeout === "undefined" ? 0 : options.lazyLoadTimeout;
   });
 }
 
@@ -22,7 +25,8 @@ function saveOptions(e) {
     topRightButton: optionsForm.topRightButton.checked,
     bottomRightButton: optionsForm.bottomRightButton.checked,
     sizeFilterWitdh: optionsForm.sizeFilterWitdh.value,
-    sizeFilterHeight: optionsForm.sizeFilterHeight.value
+    sizeFilterHeight: optionsForm.sizeFilterHeight.value,
+    lazyLoadTimeout: optionsForm.lazyLoadTimeout.value
   });
   e.preventDefault();
 }
