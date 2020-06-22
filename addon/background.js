@@ -11,8 +11,20 @@ function onFailed(error) {
 }
 
 function download(message) {
+
+  let filename = null;
+
+  // for twitter web
+  var urlParser = new URL(message.url);
+  if (urlParser.searchParams.has("format")) {
+    let format = urlParser.searchParams.get("format");
+    let splited = urlParser.pathname.split('/');
+    filename = splited[splited.length - 1] + "." + format;
+  }
+
   let downloading = browser.downloads.download({
     url: message.url,
+    filename: filename,
     method: "GET",
     conflictAction: "uniquify"
   });
