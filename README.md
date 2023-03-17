@@ -1,4 +1,4 @@
-# firefox-addon-quick-image-save-button
+# firefox-addon-quick-download-images
 
 Add a button to save the image quickly by 1-click.
 
