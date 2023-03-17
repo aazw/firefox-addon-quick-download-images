@@ -3,142 +3,120 @@ console.log("addon loaded");
 // remove css style for default image viewer
 // * https://unformedbuilding.com/articles/default-style-for-image-only-page-on-each-browsers/
 const removeStyleSheets = [
-  // "resource://content-accessible/ImageDocument.css",
-  "resource://content-accessible/TopLevelImageDocument.css"
+    // "resource://content-accessible/ImageDocument.css",
+    "resource://content-accessible/TopLevelImageDocument.css"
 ];
 
 for (let i = 0; i < document.styleSheets.length; i++) {
-  if (removeStyleSheets.indexOf(document.styleSheets[i].href) >= 0) {
-    document.styleSheets[i].disabled = true;
-  }
+    if (removeStyleSheets.indexOf(document.styleSheets[i].href) >= 0) {
+        document.styleSheets[i].disabled = true;
+    }
 }
 
 // target url extensions
 const imgExtensions = [
-  "jpeg",
-  "jpg",
-  "png",
-  "bmp",
-  "gif",
-  "tif",
-  "tiff",
-  "webp"
+    "jpeg",
+    "jpg",
+    "png",
+    "bmp",
+    "gif",
+    "tif",
+    "tiff",
+    "webp"
 ];
 
+// marker for added img tag
+const className = "download-button-added";
+
 const imgExtensionsUpperCases = imgExtensions.map(function (x) {
-  return x.toUpperCase();
+    return x.toUpperCase();
 });
 
-function addButtons(options) {
-  
-  // init options
-  options.topRightButton = typeof options.topRightButton === 'undefined' ? true : options.topRightButton;
-  options.bottomRightButton = typeof options.bottomRightButton === 'undefined' ? true : options.bottomRightButton;
-  options.sizeFilterWitdh = typeof options.sizeFilterWitdh === 'undefined' ? 100 : options.sizeFilterWitdh;
-  options.sizeFilterHeight = typeof options.sizeFilterHeight === 'undefined' ? 100 : options.sizeFilterHeight;
-  options.lazyLoadTimeout = typeof options.lazyLoadTimeout === 'undefined' ? 0 : options.lazyLoadTimeout;
+const addDownloadButtonToImage = (image) => {
 
-  // search img tags
-  let images = document.querySelectorAll("img");
-  if (images.length == 0) {
-    return;
-  }
-
-  images.forEach(element => {
-    // get the target element
-    let target = element;
-    let downloadUrl = element.src;
+    const widthThreshold = 100;
+    const heightThreshold = 100;
 
     // filter by size
-    if (target.width < options.sizeFilterWitdh && target.height < options.sizeFilterHeight) {
-      // skip
-      return
+    if (image.width < widthThreshold && image.height < heightThreshold) {
+        // skip
+        return
     }
 
-    // update the target element if it is be wrapped by A tag
-    if (element.parentElement.tagName == "A") {
-      target = element.parentElement;
+    let downloadURL = image.src;
+    let target = image;
+    let targetParent = image.parentElement;
 
-      // override downloadUrl
-      let extension = target.href.split(".").pop();
-      if (
-        imgExtensions.indexOf(extension) >= 0 ||
-        imgExtensionsUpperCases.indexOf(extension) >= 0
-      ) {
-        // image link
-        downloadUrl = target.href;
-      } else {
-        return;
-      }
+    // check sign
+    target.classList.add(className);
+
+    // for <a><img/></a>
+    if (targetParent.tagName === "A") {
+        target = targetParent; // target: A tag
+        targetParent = targetParent.parentElement; // target's parent: A tag's parent
+
+        // override downloadUrl
+        // when href is a link for the bigger image
+        let extension = target.href.split(".").pop();
+        if (imgExtensions.indexOf(extension) >= 0 || imgExtensionsUpperCases.indexOf(extension) >= 0) {
+            // image link
+            downloadURL = target.href;
+        }
     }
 
-    // create an image container
-    let imgContainer = document.createElement("div");
+    // insert container between parent(targetParent) and child(target)
+    const container = document.createElement("div");
+    target.replaceWith(container);
+    container.appendChild(target);
 
-    // add the image container into the parent node of the target element
-    target.parentElement.appendChild(imgContainer);
+    // set container's styles
+    container.style.display = "inline-block";
+    container.style.position = "relative";
 
-    // move the target element to the image container
-    imgContainer.appendChild(target);
-
-    // add an download button overlaying the target element
-    imgContainer.style.display = "inline-block";
-    imgContainer.style.position = "relative";
-
-    // download func
-    let downloadFunc = function () {
-      browser.runtime.sendMessage({ url: downloadUrl });
-    };
-
-    if (options.topRightButton) {
-      // top right
-      let overlay1 = document.createElement("img");
-      overlay1.src = browser.extension.getURL("images/save.png");
-      overlay1.style.width = "2em";
-      overlay1.style.height = "2em";
-      overlay1.style.position = "absolute";
-      overlay1.style.right = 0;
-      overlay1.style.top = 0;
-      overlay1.style.cursor = "pointer";
-      overlay1.style.backgroundColor = "rgba(0, 0, 0, .1)";
-      overlay1.addEventListener("click", downloadFunc);
-      imgContainer.appendChild(overlay1);
+    if (container.querySelector("img:first-child").width == 0) {
+        container.style.width = "100%";
+        container.style.height = "100%";
     }
 
-    if (options.bottomRightButton) {
-      // bottom right
-      let overlay2 = document.createElement("img");
-      overlay2.src = browser.extension.getURL("images/save.png");
-      overlay2.style.width = "2em";
-      overlay2.style.height = "2em";
-      overlay2.style.position = "absolute";
-      overlay2.style.right = 0;
-      overlay2.style.bottom = 0;
-      overlay2.style.cursor = "pointer";
-      overlay2.style.backgroundColor = "rgba(0, 0, 0, .1)";
-      overlay2.addEventListener("click", downloadFunc);
-      imgContainer.appendChild(overlay2);
-    }
-  });
+    // add download button
+    const downloadButton = document.createElement("img");
+    downloadButton.classList.add(className);
+    container.appendChild(downloadButton);
+    downloadButton.src = browser.extension.getURL("images/save.svg");
+    downloadButton.style.width = "2em";
+    downloadButton.style.height = "2em";
+    downloadButton.style.position = "absolute";
+    downloadButton.style.right = 0;
+    downloadButton.style.top = 0;
+    downloadButton.style.cursor = "pointer";
+    downloadButton.style.backgroundColor = "rgba(0, 0, 0, .1)";
+    downloadButton.addEventListener("click", () => {
+        browser.runtime.sendMessage({ url: downloadURL });
+    });
 }
 
-// add-on implementation
-function loadAddon() {
-  browser.storage.local.get().then(options => {
+function init() {
 
-    console.log("addon initializing");
-
-    if (options.lazyLoadTimeout == 0) {
-      addButtons(options);
+    const images = document.querySelectorAll(`img:not(.${className})`);
+    for (const image of images) {
+        if (image) {
+            if (image.complete) {
+                addDownloadButtonToImage(image);
+            } else {
+                image.addEventListener('load', () => {
+                    addDownloadButtonToImage(image);
+                });
+            }
+        }
     }
-    else {
-      setTimeout(addButtons, options.lazyLoadTimeout, options);
-    }
-
-    console.log("addon initialized");
-  });
 }
 
-loadAddon();
+// support continuous execution
+document.addEventListener("scroll", (event) => {
+    init();
+});
+
+// run first time
+init();
 
 console.log("addon configured");

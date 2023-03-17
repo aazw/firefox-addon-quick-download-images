@@ -15,4 +15,5 @@ zip ../firefox-addon.xpi \
     options.js \
     images/icon-48.png \
     images/icon-96.png \
+    images/save.svg \
     images/save.png
