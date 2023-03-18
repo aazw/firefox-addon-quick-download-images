@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Quick Donwload Images",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "description": "Add a button to download/save the image quickly by 1-click",
     "icons": {
         "48": "images/icon-48.png",
