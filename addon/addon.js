@@ -26,13 +26,37 @@ const imgExtensions = [
 ];
 
 // marker for added img tag
-const className = "download-button-added";
+const className = "quick-download-button-added";
 
 const imgExtensionsUpperCases = imgExtensions.map(function (x) {
     return x.toUpperCase();
 });
 
+const newButton = (downloadURL) => {
+
+    const downloadButton = document.createElement("img");
+    downloadButton.classList.add(className);
+
+    downloadButton.src = browser.extension.getURL("images/save.svg");
+    downloadButton.style.width = "2em";
+    downloadButton.style.height = "2em";
+    downloadButton.style.position = "absolute";
+    // downloadButton.style.right = 0;
+    // downloadButton.style.top = 0;
+    downloadButton.style.cursor = "pointer";
+    downloadButton.style.backgroundColor = "rgba(0, 0, 0, .1)";
+    downloadButton.addEventListener("click", () => {
+        browser.runtime.sendMessage({ url: downloadURL });
+    });
+
+    return downloadButton;
+}
+
 const addDownloadButtonToImage = (image) => {
+
+    if(image.classList.contains(className)) {
+        return;
+    }
 
     const widthThreshold = 100;
     const heightThreshold = 100;
@@ -78,21 +102,16 @@ const addDownloadButtonToImage = (image) => {
         container.style.height = "100%";
     }
 
-    // add download button
-    const downloadButton = document.createElement("img");
-    downloadButton.classList.add(className);
-    container.appendChild(downloadButton);
-    downloadButton.src = browser.extension.getURL("images/save.svg");
-    downloadButton.style.width = "2em";
-    downloadButton.style.height = "2em";
-    downloadButton.style.position = "absolute";
-    downloadButton.style.right = 0;
-    downloadButton.style.top = 0;
-    downloadButton.style.cursor = "pointer";
-    downloadButton.style.backgroundColor = "rgba(0, 0, 0, .1)";
-    downloadButton.addEventListener("click", () => {
-        browser.runtime.sendMessage({ url: downloadURL });
-    });
+    // add download button on 
+    const downloadButton1 = newButton(downloadURL);
+    container.appendChild(downloadButton1);
+    downloadButton1.style.right = 0;
+    downloadButton1.style.top = 0;
+
+    const downloadButton2 = newButton(downloadURL);
+    container.appendChild(downloadButton2);
+    downloadButton2.style.right = 0;
+    downloadButton2.style.bottom = 0;
 }
 
 function init() {
@@ -103,9 +122,12 @@ function init() {
             if (image.complete) {
                 addDownloadButtonToImage(image);
             } else {
-                image.addEventListener('load', () => {
-                    addDownloadButtonToImage(image);
-                });
+                if (image.getAttribute('load-event-listener-added') !== 'true') {
+                    image.addEventListener('load', () => {
+                        addDownloadButtonToImage(image);
+                    });
+                    image.setAttribute('load-event-listener-added', 'true');
+                }
             }
         }
     }
