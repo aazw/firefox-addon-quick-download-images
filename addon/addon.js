@@ -99,7 +99,7 @@ const addDownloadButtonToImage = (image) => {
 
     if (container.querySelector("img:first-child").width == 0) {
         container.style.width = "100%";
-        container.style.height = "100%";
+        // container.style.height = "100%";
     }
 
     // add download button on 
