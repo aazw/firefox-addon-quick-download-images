@@ -107,11 +107,13 @@ const addDownloadButtonToImage = (image) => {
     container.appendChild(downloadButton1);
     downloadButton1.style.right = 0;
     downloadButton1.style.top = 0;
+    downloadButton1.style.fontSize = "unset";
 
     const downloadButton2 = newButton(downloadURL);
     container.appendChild(downloadButton2);
     downloadButton2.style.right = 0;
     downloadButton2.style.bottom = 0;
+    downloadButton2.style.fontSize = "unset";
 }
 
 function init() {
