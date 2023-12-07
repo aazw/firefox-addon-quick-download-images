@@ -68,6 +68,13 @@ const addDownloadButtonToImage = (image) => {
     }
 
     let downloadURL = image.src;
+    console.log("download url: " + downloadURL);
+
+    if(downloadURL.startsWith("data:")) {
+        // skip
+        return
+    }
+
     let target = image;
     let targetParent = image.parentElement;
 
