@@ -25,13 +25,29 @@ const download = async (message) => {
   const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
   await sleep(50);
 
-  const downloading = browser.downloads.download({
-    url: message.url,
-    filename: filename,
-    method: "GET",
-    conflictAction: "uniquify"
-  });
-  downloading.then(onStartedDownload, onFailed);
+  const maxRetryCount = 10;
+
+  for (let retryCount = 0; retryCount < maxRetryCount; retryCount++) {
+    try {
+      const downloading = await browser.downloads.download({
+        url: message.url,
+        filename: filename,
+        method: "GET",
+        conflictAction: "uniquify"
+      });
+
+      console.log(`Started downloading: ${downloading}`);
+      break; // finish retry loop
+    } catch (error) {
+      console.log(`Download failed: ${error}`);
+      await sleep(50);
+      console.log(`retrying`);
+    }
+  }
+
+  console.log(`Download complete`);
+
+  // downloading.then(onStartedDownload, onFailed);
 }
 
 browser.runtime.onMessage.addListener(download);
