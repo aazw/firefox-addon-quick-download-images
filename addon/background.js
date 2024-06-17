@@ -2,9 +2,6 @@
 // * https://stackoverflow.com/questions/48450230/firefox-webextension-api-downloads-not-working/48456109
 // * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#Communicating_with_background_scripts
 
-// 画像にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
-const regexpForBasename = new RegExp("[a-zA-Z0-9\-_]", "g");
-
 // バックグラウンドスクリプトでのダウンロード処理
 const download = async (message) => {
 
@@ -21,7 +18,7 @@ const download = async (message) => {
   const basename = filenameParts.join(".");
 
   // ベース名にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
-  if (regexpForBasename.exec(basename)) {
+  if (new RegExp("[a-zA-Z0-9\-_]", "g").exec(basename)) {
     // ページタイトルをファイルパスにできるよう正規化
     // https://stackoverflow.com/questions/54804674/regex-remove-special-characters-in-filename-except-extension
     let title = message.documentTitle.replace(/[\/:\\\^`\|]/g, "_");
