@@ -2,19 +2,40 @@
 // * https://stackoverflow.com/questions/48450230/firefox-webextension-api-downloads-not-working/48456109
 // * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#Communicating_with_background_scripts
 
-const onStartedDownload = (id) => {
-  console.log(`Started downloading: ${id}`);
-}
+// 画像にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
+const regexpForBasename = new RegExp("[a-zA-Z0-9\-_]", "g");
 
-const onFailed = (error) => {
-  console.log(`Download failed: ${error}`);
-}
-
+// バックグラウンドスクリプトでのダウンロード処理
 const download = async (message) => {
 
   let filename = null;
 
-  // for twitter web
+  // URLからファイル名取得
+  const urlPath = new URL(message.url).pathname;
+  const urlPathParts = urlPath.split("/");
+  filename = urlPathParts[urlPathParts.length - 1];
+
+  // ファイル名からベース名取得
+  const filenameParts = filename.split(".");
+  const extension = filenameParts.pop();
+  const basename = filenameParts.join(".");
+
+  // ベース名にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
+  if (regexpForBasename.exec(basename)) {
+    // ページタイトルをファイルパスにできるよう正規化
+    // https://stackoverflow.com/questions/54804674/regex-remove-special-characters-in-filename-except-extension
+    let title = message.documentTitle.replace(/[\/:\\\^`\|]/g, "_");
+
+    // ファイル名長くなりすぎて保存できなくなるのに対応. ページタイトル30文字以上切り捨て
+    if (title.length > 30) {
+      title = title.substring(0, 30);
+    }
+
+    // ファイル名にページタイトルを追加
+    filename = title + "_" + basename + "." + extension;
+  }
+
+  // Twitter Web向け設定
   const urlParser = new URL(message.url);
   if (urlParser.searchParams.has("format")) {
     let format = urlParser.searchParams.get("format");
@@ -22,11 +43,16 @@ const download = async (message) => {
     filename = splited[splited.length - 1] + "." + format;
   }
 
+  // リトライ時の待機処理
   const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
+
+  // 謎の50msまち. 意味ないのなら消す
   await sleep(50);
 
+  // リトライカウント
   const maxRetryCount = 10;
 
+  // ダウンロード with リトライ
   for (let retryCount = 0; retryCount < maxRetryCount; retryCount++) {
     try {
       const downloading = await browser.downloads.download({
@@ -36,18 +62,15 @@ const download = async (message) => {
         conflictAction: "uniquify"
       });
 
-      console.log(`Started downloading: ${downloading}`);
-      break; // finish retry loop
+      // リトライループの正常終了
+      break;
+
     } catch (error) {
-      console.log(`Download failed: ${error}`);
+      // リトライ前の待機
       await sleep(50);
-      console.log(`retrying`);
     }
   }
-
-  console.log(`Download complete`);
-
-  // downloading.then(onStartedDownload, onFailed);
 }
 
+// コンテンツスクリプトからのメッセージの受取り
 browser.runtime.onMessage.addListener(download);

@@ -1,19 +1,19 @@
 console.log("addon loaded");
 
-// remove css style for default image viewer
-// * https://unformedbuilding.com/articles/default-style-for-image-only-page-on-each-browsers/
+// ブラウザ標準画像ビューアのCSSスタイルの削除
+// https://unformedbuilding.com/articles/default-style-for-image-only-page-on-each-browsers/
 const removeStyleSheets = [
-    // "resource://content-accessible/ImageDocument.css",
     "resource://content-accessible/TopLevelImageDocument.css"
 ];
 
+// CSSの削除
 for (let i = 0; i < document.styleSheets.length; i++) {
     if (removeStyleSheets.indexOf(document.styleSheets[i].href) >= 0) {
         document.styleSheets[i].disabled = true;
     }
 }
 
-// target url extensions
+// ターゲットとなる画像URLの拡張子
 const imgExtensions = [
     "jpeg",
     "jpg",
@@ -25,69 +25,87 @@ const imgExtensions = [
     "webp"
 ];
 
-// marker for added img tag
-const className = "quick-download-button-added";
-
+// 拡張子一覧の大文字版
 const imgExtensionsUpperCases = imgExtensions.map(function (x) {
     return x.toUpperCase();
 });
 
-const newButton = (downloadURL) => {
+// 小さすぎる画像は広告リンクであることが多いので除外する. そのためのしきい値
+const widthThreshold = 100;
+const heightThreshold = 100;
+
+
+// 処理済み画像タグに付与するマーカー
+const className = "quick-download-button-added";
+
+// ダウンロード用ボタン要素生成
+const newDownloadButton = (downloadURL) => {
 
     const downloadButton = document.createElement("img");
-    downloadButton.classList.add(className);
-
     downloadButton.src = browser.extension.getURL("images/save.svg");
     downloadButton.style.width = "2em";
     downloadButton.style.height = "2em";
     downloadButton.style.position = "absolute";
-    // downloadButton.style.right = 0;
-    // downloadButton.style.top = 0;
     downloadButton.style.cursor = "pointer";
     downloadButton.style.backgroundColor = "rgba(0, 0, 0, .1)";
+
     downloadButton.addEventListener("click", () => {
-        browser.runtime.sendMessage({ url: downloadURL });
+        // クリックされたら、バックグラウンドスクリプトのダウンローダーへURLを転送する
+        browser.runtime.sendMessage({
+            documentTitle: document.title,
+            url: downloadURL
+        });
     });
+
+    // 処理済みマーカー付与
+    // 繰り返し処理をする際に、このボタンそのものが対象になってしまうことを防止する
+    downloadButton.classList.add(className);
 
     return downloadButton;
 }
 
+// ダウンロード用ボタン設定処理
 const addDownloadButtonToImage = (image) => {
 
-    if(image.classList.contains(className)) {
+    // すでに処理済み画像に関しては無視する
+    // ダウンロードボタンそのものもこれで除外される
+    if (image.classList.contains(className)) {
         return;
     }
 
-    const widthThreshold = 100;
-    const heightThreshold = 100;
-
-    // filter by size
+    // 小さすぎる画像は広告リンクであることが多いので無視する
     if (image.width < widthThreshold && image.height < heightThreshold) {
         // skip
         return
     }
 
+    // ダウンロード死体画像のURLを取得
     let downloadURL = image.src;
     console.log("download url: " + downloadURL);
 
-    if(downloadURL.startsWith("data:")) {
+    // 画像がデータURLの場合スキップする
+    if (downloadURL.startsWith("data:")) {
         // skip
         return
     }
 
+    // ダウンロード可能な画像にダウンロード用ボタンを付与していく
     let target = image;
     let targetParent = image.parentElement;
 
-    // check sign
+    // let originalWidth = image.offsetWidth;
+    // let originalHeight = image.offsetHeight;
+
+    // 画像に処理済みマーカー付与
     target.classList.add(className);
 
-    // for <a><img/></a>
+    // aタグで囲まれた画像対策 (例: <a><img/></a>)
     if (targetParent.tagName === "A") {
-        target = targetParent; // target: A tag
-        targetParent = targetParent.parentElement; // target's parent: A tag's parent
+        // そのまま画像にダウンロードボタンを付けても、Aタグ側のクリック担ってしまうため、Aタグの上にダウンロードボタンをつけて、クリック可能にする
+        target = targetParent;
+        targetParent = targetParent.parentElement;
 
-        // override downloadUrl
-        // when href is a link for the bigger image
+        // Aタグの参照先がより大きな画像(オリジナル画像であることが多い)である場合、ダウンロードURLをそちらに更新する
         let extension = target.href.split(".").pop();
         if (imgExtensions.indexOf(extension) >= 0 || imgExtensionsUpperCases.indexOf(extension) >= 0) {
             // image link
@@ -95,35 +113,50 @@ const addDownloadButtonToImage = (image) => {
         }
     }
 
-    // insert container between parent(targetParent) and child(target)
-    const container = document.createElement("div");
-    target.replaceWith(container);
-    container.appendChild(target);
+    // 外側divで、画像があったところに差し込む
+    const outerContainer = document.createElement("div");
+    target.replaceWith(outerContainer);
 
-    // set container's styles
-    container.style.display = "inline-block";
-    container.style.position = "relative";
+    // 内側divで、画像を格納する
+    const innerContainer = document.createElement("div");
+    innerContainer.appendChild(target);
+    outerContainer.appendChild(innerContainer);
 
-    if (container.querySelector("img:first-child").width == 0) {
-        container.style.width = "100%";
-        // container.style.height = "100%";
+    // 外側divのスタイル設定
+    outerContainer.style.display = "inline-block";
+    // outerContainer.style.width = originalWidth + "px";
+    // outerContainer.style.height = originalHeight + "px";
+
+    // 内側divのスタイル設定
+    innerContainer.style.display = "inline-block";
+    innerContainer.style.position = "relative";
+    // innerContainer.style.width = originalWidth + "px";
+    // innerContainer.style.height = originalHeight + "px";
+
+    // もし画像のサイズが0になっている場合、100%に更新
+    if (innerContainer.querySelector("img:first-child").width == 0) {
+        innerContainer.style.width = "100%";
     }
 
-    // add download button on 
-    const downloadButton1 = newButton(downloadURL);
-    container.appendChild(downloadButton1);
+    //内側divにダウンロードボタン追加 (右上)
+    const downloadButton1 = newDownloadButton(downloadURL);
+    innerContainer.appendChild(downloadButton1);
     downloadButton1.style.right = 0;
     downloadButton1.style.top = 0;
     downloadButton1.style.fontSize = "unset";
+    downloadButton1.style.zIndex = 1000;
 
-    const downloadButton2 = newButton(downloadURL);
-    container.appendChild(downloadButton2);
+    //内側divにダウンロードボタン追加 (右下)
+    const downloadButton2 = newDownloadButton(downloadURL);
+    innerContainer.appendChild(downloadButton2);
     downloadButton2.style.right = 0;
     downloadButton2.style.bottom = 0;
     downloadButton2.style.fontSize = "unset";
+    downloadButton2.style.zIndex = 1000;
 }
 
-function init() {
+// 画像を検索して、ダウンロード用ボタン設定する処理
+function exec() {
 
     const images = document.querySelectorAll(`img:not(.${className})`);
     for (const image of images) {
@@ -133,6 +166,7 @@ function init() {
             } else {
                 if (image.getAttribute('load-event-listener-added') !== 'true') {
                     image.addEventListener('load', () => {
+                        // LAZYダウンロード対策
                         addDownloadButtonToImage(image);
                     });
                     image.setAttribute('load-event-listener-added', 'true');
@@ -142,12 +176,12 @@ function init() {
     }
 }
 
-// support continuous execution
+// LAZYダウンロードなどに対応するため、スクロールされるたびに再実行されるよう設定.
 document.addEventListener("scroll", (event) => {
-    init();
+    exec();
 });
 
-// run first time
-init();
+// 初回実行
+exec();
 
 console.log("addon configured");
