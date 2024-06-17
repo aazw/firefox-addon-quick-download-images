@@ -15,7 +15,7 @@ const download = async (message) => {
   // ファイル名からベース名取得
   const filenameParts = filename.split(".");
   const extension = filenameParts.pop();
-  const basename = filenameParts.join(".");
+  const basename = decodeURI(filenameParts.join(".")).replace(/[\/:\\\^`\|]/g, "_");
 
   // ベース名にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
   if (new RegExp("[a-zA-Z0-9\-_]", "g").exec(basename)) {
