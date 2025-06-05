@@ -19,7 +19,7 @@ Add a button to save the image quickly by 1-click.
 
 ### Install release version
 
-1. Go to [release page](https://github.com/nakanot8/firefox-addon-quick-image-save-button/releases/)
+1. Go to [release page](https://github.com/aazw/firefox-addon-quick-image-save-button/releases/)
 1. Select the latest version
 1. Click `.xpi` file in Assets section
 

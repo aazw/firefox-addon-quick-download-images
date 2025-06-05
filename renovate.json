@@ -1,0 +1,96 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":configMigration"
+  ],
+  "labels": [
+    "Renovate"
+  ],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 10,
+  "assignees": [
+    "aazw"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.devcontainer\\/Dockerfile$/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "ARG\\s+GO_DOCKERFMT_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "go",
+      "depNameTemplate": "github.com/reteps/dockerfmt",
+      "versioningTemplate": "semver-coerced"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.devcontainer\\/Dockerfile$/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "ARG\\s+GO_SHFMT_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "go",
+      "depNameTemplate": "mvdan.cc/sh/v3",
+      "versioningTemplate": "semver-coerced"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.devcontainer\\/Dockerfile$/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "ARG\\s+GO_GO_TASK_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "go",
+      "depNameTemplate": "github.com/go-task/task/v3",
+      "versioningTemplate": "semver-coerced"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.devcontainer\\/Dockerfile$/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "ARG\\s+NPM_PRETTIER_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "prettier",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.devcontainer\\/Dockerfile$/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "ARG\\s+NPM_RENOVATE_VERSION=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "renovate",
+      "versioningTemplate": "npm"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchFileNames": [
+        ".devcontainer/**"
+      ],
+      "groupName": "devcontainer"
+    },
+    {
+      "matchFileNames": [
+        ".github/workflows/*.yaml"
+      ],
+      "groupName": "githubactions"
+    }
+  ]
+}

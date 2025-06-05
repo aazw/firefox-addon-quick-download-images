@@ -1,0 +1,42 @@
+{
+  "editor.formatOnSave": false,
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        // .prettierrcのフォーマット
+        "match": "\\.prettierrc$",
+        "cmd": "prettier -w \"${file}\""
+      },
+      {
+        // .prettierignoreのフォーマット
+        "match": "\\.prettierignore$",
+        "cmd": "prettier -w \"${file}\""
+      },
+      {
+        // Dcokerfileのフォーマット
+        "match": "\\bDockerfile$",
+        "cmd": "dockerfmt -n -w \"${file}\""
+      },
+      {
+        // シェルスクリプトのフォーマット
+        "match": "\\.sh$",
+        "cmd": "shfmt -w \"${file}\""
+      },
+      {
+        // YAMLのフォーマット
+        "match": "\\.ya?ml$",
+        "cmd": "prettier -w \"${file}\""
+      },
+      {
+        // JSONのフォーマット
+        "match": "\\.json$",
+        "cmd": "prettier -w \"${file}\""
+      },
+      {
+        // HTMLのフォーマット
+        "match": "\\.html$",
+        "cmd": "prettier -w \"${file}\""
+      }
+    ]
+  }
+}
