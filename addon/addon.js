@@ -34,8 +34,8 @@ const imgExtensionsUpperCases = imgExtensions.map(function (x) {
 });
 
 // 小さすぎる画像は広告リンクであることが多いので除外する. そのためのしきい値
-const widthThreshold = 100;
-const heightThreshold = 100;
+const minWidth = 100;
+const minHeight = 100;
 
 // 処理済み画像タグに付与するマーカー
 const className = "quick-download-button-added";
@@ -74,7 +74,7 @@ const addDownloadButtonToImage = (image) => {
   }
 
   // 小さすぎる画像は広告リンクであることが多いので無視する
-  if (image.width < widthThreshold && image.height < heightThreshold) {
+  if (image.width < minWidth && image.height < minHeight) {
     // skip
     return;
   }
@@ -164,8 +164,8 @@ function tryAttach(img) {
     // ロード完了
     img.complete &&
     // 指定のサイズより大きい
-    img.naturalWidth >= widthThreshold &&
-    img.naturalHeight >= heightThreshold
+    img.naturalWidth >= minWidth &&
+    img.naturalHeight >= minHeight
   ) {
     addDownloadButtonToImage(img);
     return true;
