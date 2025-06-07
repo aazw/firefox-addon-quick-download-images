@@ -4,6 +4,8 @@
 
 // バックグラウンドスクリプトでのダウンロード処理
 const download = async (message) => {
+  if (!message?.length === 0) return;
+
   let filename = null;
 
   // URLからファイル名取得
