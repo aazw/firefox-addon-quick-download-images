@@ -4,7 +4,7 @@
 
 // バックグラウンドスクリプトでのダウンロード処理
 const download = async (message) => {
-  if (!message?.length === 0) return;
+  if (Object.keys(message).length === 0) return;
 
   let filename = null;
 
@@ -16,16 +16,19 @@ const download = async (message) => {
   // ファイル名からベース名取得
   const filenameParts = filename.split(".");
   const extension = filenameParts.pop();
-  const basename = decodeURI(filenameParts.join(".")).replace(
-    /[\/:\\\^`\|]/g,
-    "_",
-  );
+  const basename = decodeURI(filenameParts.join("."))
+    .replace(/[\/:\\\^`\|]/g, "_")
+    .replace(/ *_+ */g, "_")
+    .replace("?", "_");
 
   // ベース名にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
   if (new RegExp("[a-zA-Z0-9\-_]", "g").exec(basename)) {
     // ページタイトルをファイルパスにできるよう正規化
     // https://stackoverflow.com/questions/54804674/regex-remove-special-characters-in-filename-except-extension
-    let title = message.documentTitle.replace(/[\/:\\\^`\|]/g, "_");
+    let title = message.documentTitle
+      .replace(/[\/:\\\^`\|]/g, "_")
+      .replace(/ *_+ */g, "_")
+      .replace("?", "_");
 
     // ファイル名長くなりすぎて保存できなくなるのに対応. ページタイトル30文字以上切り捨て
     if (title.length > 30) {
@@ -33,7 +36,7 @@ const download = async (message) => {
     }
 
     // ファイル名にページタイトルを追加
-    filename = title + "_" + basename + "." + extension;
+    filename = title.trim() + "_" + basename.trim() + "." + extension;
   }
 
   // Twitter Web向け設定
@@ -57,17 +60,20 @@ const download = async (message) => {
   // ダウンロード with リトライ
   for (let retryCount = 0; retryCount < maxRetryCount; retryCount++) {
     try {
+      console.log(`downloading: ${filename} from ${message.url}`);
       const downloading = await browser.downloads.download({
         url: message.url,
         filename: filename,
         method: "GET",
         conflictAction: "uniquify",
       });
+      console.log(`downloaded: ${filename} from ${message.url}`);
 
       // リトライループの正常終了
       break;
     } catch (error) {
       // リトライ前の待機
+      console.log(error);
       await sleep(50);
     }
   }

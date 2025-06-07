@@ -1,7 +1,7 @@
 console.log("addon loaded");
 
 // 起動直後にバックグラウンドをウォームアップ
-browser.runtime.sendMessage({ warmup: true }).catch(() => {});
+browser.runtime.sendMessage({}).catch(() => {});
 
 // ブラウザ標準画像ビューアのCSSスタイルの削除
 // https://unformedbuilding.com/articles/default-style-for-image-only-page-on-each-browsers/
@@ -93,7 +93,7 @@ const addDownloadButtonToImage = (img) => {
   // 画像がデータURLの場合スキップする
   if (downloadURL.startsWith("data:")) {
     // skip
-    // TODO
+    console.log(`skip: ${downloadURL}`);
     return;
   }
 
@@ -101,7 +101,10 @@ const addDownloadButtonToImage = (img) => {
   let wrapTarget = img;
 
   // aタグで囲まれた画像対策 (例: <a><img/></a>)
-  if (img.parentElement?.tagName === "A") {
+  if (
+    img.parentElement?.tagName === "A" &&
+    downloadURL != img.parentElement?.href
+  ) {
     // そのまま画像にダウンロードボタンを付けても、Aタグ側のクリック担ってしまうため、Aタグの上にダウンロードボタンをつけて、クリック可能にする
     wrapTarget = img.parentElement;
 
@@ -113,6 +116,7 @@ const addDownloadButtonToImage = (img) => {
     ) {
       // image link
       downloadURL = wrapTarget.href;
+      console.log("download url (override): " + downloadURL);
     }
   }
 
