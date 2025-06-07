@@ -1,5 +1,8 @@
 console.log("addon loaded");
 
+// 起動直後にバックグラウンドをウォームアップ
+browser.runtime.sendMessage({ warmup: true }).catch(() => {});
+
 // ブラウザ標準画像ビューアのCSSスタイルの削除
 // https://unformedbuilding.com/articles/default-style-for-image-only-page-on-each-browsers/
 const removeStyleSheets = [
@@ -155,32 +158,74 @@ const addDownloadButtonToImage = (image) => {
   downloadButton2.style.zIndex = 1000;
 };
 
-// 画像を検索して、ダウンロード用ボタン設定する処理
-function exec() {
-  const images = document.querySelectorAll(`img:not(.${className})`);
-  for (const image of images) {
-    if (image) {
-      if (image.complete) {
-        addDownloadButtonToImage(image);
-      } else {
-        if (image.getAttribute("load-event-listener-added") !== "true") {
-          image.addEventListener("load", () => {
-            // LAZYダウンロード対策
-            addDownloadButtonToImage(image);
-          });
-          image.setAttribute("load-event-listener-added", "true");
-        }
-      }
-    }
+function tryAttach(img) {
+  // 成功したら true, 見送ったら false
+  if (
+    // ロード完了
+    img.complete &&
+    // 指定のサイズより大きい
+    img.naturalWidth >= widthThreshold &&
+    img.naturalHeight >= heightThreshold
+  ) {
+    addDownloadButtonToImage(img);
+    return true;
   }
+  return false;
 }
 
-// LAZYダウンロードなどに対応するため、スクロールされるたびに再実行されるよう設定.
-document.addEventListener("scroll", (event) => {
-  exec();
-});
+// 要素とビューポート(or指定の要素)との"交差状態"をブラウザが監視し、非同期コールバックで通知
+const io = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return; // 交差状態
 
-// 初回実行
-exec();
+      const img = e.target;
+      if (tryAttach(img)) {
+        // 付与できたので監視終了
+        io.unobserve(img);
+      } else {
+        // まだロード中なら load 完了後に再試行
+        img.addEventListener(
+          "load",
+          () => {
+            if (tryAttach(img)) {
+              // 付与できたので監視終了
+              io.unobserve(img);
+            }
+          },
+          { once: true },
+        );
+      }
+    });
+  },
+  {
+    // ビューポートより300px外側に仮想的な境界線をつくり、そこに要素が入った瞬間(=実際に目に触れる手前)でcallbackが呼ばれる
+    rootMargin: "300px",
+  },
+);
+
+// 既に存在するimgを監視
+document.querySelectorAll("img").forEach((img) => io.observe(img));
+
+// MutationObserverでの監視で、imgが追加された場合に対応
+new MutationObserver((records) => {
+  // 変更レコード走査 (1回の発火で複数の変更がまとめて届く)
+  for (const r of records) {
+    // 属性変更などは除外し、子ノード追加/削除だけを通す
+    if (r.type !== "childList") continue;
+
+    // 追加分だけを見る (removedNodesは見ない)
+    r.addedNodes.forEach((n) => {
+      if (n.nodeType !== 1) return; // 要素ノード(1)以外は除外
+
+      // imgタグなら監視追加
+      // 直に追加されたimg監視
+      if (n.tagName === "img") io.observe(n);
+
+      // 子孫のimgも拾う
+      n.querySelectorAll?.("img").forEach((i) => io.observe(i));
+    });
+  }
+}).observe(document, { childList: true, subtree: true });
 
 console.log("addon configured");
