@@ -36,6 +36,16 @@
         // HTMLのフォーマット
         "match": "\\.html$",
         "cmd": "prettier -w \"${file}\""
+      },
+      {
+        // JavaScriptのフォーマット
+        "match": "\\.js$",
+        "cmd": "prettier -w \"${file}\""
+      },
+      {
+        // CSSのフォーマット
+        "match": "\\.css$",
+        "cmd": "prettier -w \"${file}\""
       }
     ]
   }
