@@ -1,0 +1,24 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars: {}
+
+tasks:
+  all:
+    dir: "{{ .TASKFILE_DIR }}"
+    cmds:
+      - task --list-all
+    silent: true
+
+  remove_ds_store:
+    dir: "{{ .TASKFILE_DIR }}"
+    cmds:
+      - ./scripts/remove_ds_store.sh
+    silent: true
+
+  build:
+    dir: "{{ .TASKFILE_DIR }}"
+    cmds:
+      - ./scripts/build.sh
+    silent: true

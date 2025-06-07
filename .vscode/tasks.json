@@ -2,9 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Remove all .DS_Store",
+      "type": "shell",
+      "command": "task remove_ds_store",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Build",
       "type": "shell",
-      "command": "${workspaceFolder}/scripts/build.sh",
+      "command": "task build",
       "group": "none",
       "presentation": {
         "reveal": "always",
