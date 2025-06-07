@@ -34,8 +34,8 @@ const imgExtensionsUpperCases = imgExtensions.map(function (x) {
 });
 
 // 小さすぎる画像は広告リンクであることが多いので除外する. そのためのしきい値
-const minWidth = 100;
-const minHeight = 100;
+const minWidth = 200;
+const minHeight = 200;
 
 // 処理済み画像タグに付与するマーカー
 const className = "quick-download-button-added";
@@ -66,96 +66,90 @@ const newDownloadButton = (downloadURL) => {
 };
 
 // ダウンロード用ボタン設定処理
-const addDownloadButtonToImage = (image) => {
+const addDownloadButtonToImage = (img) => {
   // すでに処理済み画像に関しては無視する
   // ダウンロードボタンそのものもこれで除外される
-  if (image.classList.contains(className)) {
+  if (img.classList.contains(className)) {
+    return;
+  }
+
+  // ロード中は無視する
+  if (!img.complete) {
     return;
   }
 
   // 小さすぎる画像は広告リンクであることが多いので無視する
-  if (image.width < minWidth && image.height < minHeight) {
-    // skip
+  if (img.width < minWidth || img.height < minHeight) {
     return;
   }
 
-  // ダウンロード死体画像のURLを取得
-  let downloadURL = image.src;
+  // 画像に処理済みマーカー付与
+  img.classList.add(className);
+
+  // ダウンロードしたい画像のURLを取得
+  let downloadURL = img.src;
   console.log("download url: " + downloadURL);
 
   // 画像がデータURLの場合スキップする
   if (downloadURL.startsWith("data:")) {
     // skip
+    // TODO
     return;
   }
 
   // ダウンロード可能な画像にダウンロード用ボタンを付与していく
-  let target = image;
-  let targetParent = image.parentElement;
-
-  // let originalWidth = image.offsetWidth;
-  // let originalHeight = image.offsetHeight;
-
-  // 画像に処理済みマーカー付与
-  target.classList.add(className);
+  let wrapTarget = img;
 
   // aタグで囲まれた画像対策 (例: <a><img/></a>)
-  if (targetParent.tagName === "A") {
+  if (img.parentElement?.tagName === "A") {
     // そのまま画像にダウンロードボタンを付けても、Aタグ側のクリック担ってしまうため、Aタグの上にダウンロードボタンをつけて、クリック可能にする
-    target = targetParent;
-    targetParent = targetParent.parentElement;
+    wrapTarget = img.parentElement;
 
     // Aタグの参照先がより大きな画像(オリジナル画像であることが多い)である場合、ダウンロードURLをそちらに更新する
-    let extension = target.href.split(".").pop();
+    let extension = wrapTarget.href.split(".").pop();
     if (
       imgExtensions.indexOf(extension) >= 0 ||
       imgExtensionsUpperCases.indexOf(extension) >= 0
     ) {
       // image link
-      downloadURL = target.href;
+      downloadURL = wrapTarget.href;
     }
   }
 
-  // 外側divで、画像があったところに差し込む
-  const outerContainer = document.createElement("div");
-  target.replaceWith(outerContainer);
+  const wrapper = document.createElement("span");
+  wrapper.className = "qd-wrapper";
+  // inline-block で独立ボックスを持たせ、絶対配置の基準にする
+  // vertical-align:top で行間ヨレを抑制
+  wrapper.style.cssText = [
+    "display:inline-block;",
+    "position:relative;",
+    "vertical-align:top;",
+    "margin:0;",
+    "padding:0;",
+    "border:none;",
+    "background:none;",
+  ]
+    .join("; ")
+    .trim();
 
-  // 内側divで、画像を格納する
-  const innerContainer = document.createElement("div");
-  innerContainer.appendChild(target);
-  outerContainer.appendChild(innerContainer);
-
-  // 外側divのスタイル設定
-  outerContainer.style.display = "inline-block";
-  // outerContainer.style.width = originalWidth + "px";
-  // outerContainer.style.height = originalHeight + "px";
-
-  // 内側divのスタイル設定
-  innerContainer.style.display = "inline-block";
-  innerContainer.style.position = "relative";
-  // innerContainer.style.width = originalWidth + "px";
-  // innerContainer.style.height = originalHeight + "px";
-
-  // もし画像のサイズが0になっている場合、100%に更新
-  if (innerContainer.querySelector("img:first-child").width == 0) {
-    innerContainer.style.width = "100%";
-  }
+  wrapTarget.replaceWith(wrapper);
+  wrapper.appendChild(wrapTarget);
 
   //内側divにダウンロードボタン追加 (右上)
-  const downloadButton1 = newDownloadButton(downloadURL);
-  innerContainer.appendChild(downloadButton1);
-  downloadButton1.style.right = 0;
-  downloadButton1.style.top = 0;
-  downloadButton1.style.fontSize = "unset";
-  downloadButton1.style.zIndex = 1000;
+  const btnTR = newDownloadButton(downloadURL);
+  wrapper.appendChild(btnTR);
+  btnTR.style.right = 0;
+  btnTR.style.top = 0;
+  btnTR.style.fontSize = "unset";
+  btnTR.style.zIndex = 1000;
 
   //内側divにダウンロードボタン追加 (右下)
-  const downloadButton2 = newDownloadButton(downloadURL);
-  innerContainer.appendChild(downloadButton2);
-  downloadButton2.style.right = 0;
-  downloadButton2.style.bottom = 0;
-  downloadButton2.style.fontSize = "unset";
-  downloadButton2.style.zIndex = 1000;
+  const btnBR = newDownloadButton(downloadURL);
+  wrapper.appendChild(btnBR);
+  btnBR.style.right = 0;
+  btnBR.style.bottom = 0;
+  btnBR.style.fontSize = "unset";
+  btnBR.style.zIndex = 1000;
 };
 
 function tryAttach(img) {
