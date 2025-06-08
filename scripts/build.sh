@@ -6,8 +6,10 @@ set -eu
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 cd $DIR/../addon
 
+manifest_version=$(cat manifest.json | jq -r ".version")
+
 # packaging
-zip ../firefox-addon.xpi \
+zip ../build/firefox-addon-${manifest_version}.xpi \
 	manifest.json \
 	addon.js \
 	background.js \
