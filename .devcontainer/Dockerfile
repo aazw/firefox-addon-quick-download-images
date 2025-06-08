@@ -20,7 +20,7 @@ ARG GO_GO_TASK_VERSION=v3.43.3
 
 # for npm tools
 ARG NPM_PRETTIER_VERSION=3.5.3
-ARG NPM_RENOVATE_VERSION=40.45.2
+ARG NPM_RENOVATE_VERSION=40.48.3
 
 # ##########################################################################################
 # builder images
