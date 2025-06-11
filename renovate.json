@@ -54,6 +54,13 @@
   ],
   "packageRules": [
     {
+      "enabled": false,
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["npm"],
+      "matchDepNames": ["renovate"],
+      "matchUpdateTypes": ["patch"]
+    },
+    {
       "matchFileNames": [".devcontainer/**"],
       "groupName": "devcontainer"
     },
