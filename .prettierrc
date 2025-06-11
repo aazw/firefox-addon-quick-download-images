@@ -1,7 +1,7 @@
 {
   "overrides": [
     {
-      "files": "*.json",
+      "files": "addon/manifest.json",
       "options": {
         "printWidth": 10
       }
