@@ -101,12 +101,9 @@ const addDownloadButtonToImage = (img) => {
   let wrapTarget = img;
 
   // aタグで囲まれた画像対策 (例: <a><img/></a>)
-  if (
-    img.parentElement?.tagName === "A" &&
-    downloadURL != img.parentElement?.href
-  ) {
+  if (img.parentElement?.tagName === "A") {
     // そのまま画像にダウンロードボタンを付けても、Aタグ側のクリック担ってしまうため、Aタグの上にダウンロードボタンをつけて、クリック可能にする
-    wrapTarget = img.parentElement;
+    wrapTarget = img.parentElement; // aタグのはず
 
     // Aタグの参照先がより大きな画像(オリジナル画像であることが多い)である場合、ダウンロードURLをそちらに更新する
     let extension = wrapTarget.href.split(".").pop();
