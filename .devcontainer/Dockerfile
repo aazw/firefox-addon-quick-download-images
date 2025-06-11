@@ -65,6 +65,7 @@ FROM mikefarah/yq:${DOCKER_YQ_VERSION} AS yq-builder
 # https://note.milldea.com/posts/two-ways-to-install-nodejs-with-fixed-version-in-dockerfile
 FROM node:${DOCKER_NODE_VERSION}
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NOWARNINGS=yes
 
 # add distribution packages
 RUN apt-get -y update
