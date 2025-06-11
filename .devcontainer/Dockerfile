@@ -16,11 +16,11 @@ ARG DOCKER_YQ_VERSION=4.45.4
 # for go install
 ARG GO_DOCKERFMT_VERSION=v0.3.7
 ARG GO_SHFMT_VERSION=v3.11.0
-ARG GO_GO_TASK_VERSION=v3.43.3
+ARG GO_GO_TASK_VERSION=v3.44.0
 
 # for npm tools
 ARG NPM_PRETTIER_VERSION=3.5.3
-ARG NPM_RENOVATE_VERSION=40.48.4
+ARG NPM_RENOVATE_VERSION=40.49.11
 
 # ##########################################################################################
 # builder images
