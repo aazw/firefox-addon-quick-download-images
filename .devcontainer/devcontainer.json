@@ -11,17 +11,29 @@
       "extensions": [
         "emeraldwalk.runonsave",
         "ms-azuretools.vscode-containers",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "biomejs.biome"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
+  "mounts": [
+    {
+      "source": "${localWorkspaceFolder}/.claude",
+      "target": "/home/vscode/.claude",
+      "type": "bind"
+    }
+  ],
   "remoteUser": "vscode",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
     "TZ": "Asia/Tokyo"
+  },
+  "containerEnv": {
+    // "LANG": "ja_JP.UTF-8",
+    // "LC_MESSAGES": "C"
   },
   "runArgs": [
     "--name",

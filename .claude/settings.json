@@ -1,0 +1,20 @@
+// https://docs.anthropic.com/ja/docs/claude-code/settings
+{
+  "permissions": {
+    "allow": [
+      //
+    ],
+    "deny": [
+      //
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "0",
+    "DISABLE_AUTOUPDATER": "1",
+    "DISABLE_BUG_COMMAND": "1",
+    // "DISABLE_COST_WARNINGS": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_TELEMETRY": "1"
+  }
+}

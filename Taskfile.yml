@@ -11,10 +11,10 @@ tasks:
       - task --list-all
     silent: true
 
-  remove_ds_store:
+  remove_system_files:
     dir: "{{ .TASKFILE_DIR }}"
     cmds:
-      - ./scripts/remove_ds_store.sh
+      - find . -name ".DS_Store" -delete -print
     silent: true
 
   build:

@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Remove all .DS_Store",
+      "label": "Remove all system files",
       "type": "shell",
-      "command": "task remove_ds_store",
+      "command": "task remove_system_files",
       "group": "none",
       "presentation": {
         "reveal": "always",

@@ -1,9 +1,3 @@
-*.zip
-*.xpi
-
-build/*
-!build/.gitkeep
-
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,node,yarn
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,node,yarn
 
@@ -239,3 +233,14 @@ $RECYCLE.BIN/
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,node,yarn
+
+# Claude Code data (keep settings.json, ignore session data)
+.claude/*
+!.claude/settings.json
+
+# builds
+*.zip
+*.xpi
+
+build/*
+!build/.gitkeep
