@@ -234,6 +234,10 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,node,yarn
 
+# Ignore core dump files
+core
+core.*
+
 # Claude Code data (keep settings.json, ignore session data)
 .claude/*
 !.claude/settings.json
