@@ -1,0 +1,11 @@
+{
+  "name": "firefox-addon-quick-download-images",
+  "type": "module",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@biomejs/biome": "^2.3.10"
+  },
+  "peerDependencies": {}
+}

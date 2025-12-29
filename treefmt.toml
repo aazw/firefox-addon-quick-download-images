@@ -1,0 +1,24 @@
+[formatter.prettier]
+command = "prettier"
+options = ["-w"]
+includes = ["*.json", "*.yaml", "*.yml", ".prettierignore"]
+
+[formatter.dockerfmt]
+command = "dockerfmt"
+options = ["-n", "-w"]
+includes = ["**/Dockerfile"]
+
+[formatter.shfmt]
+command = "shfmt"
+options = ["-w"]
+includes = ["*.sh"]
+
+[formatter.taplo]
+command = "taplo"
+options = ["fmt"]
+includes = ["*.toml"]
+
+[formatter.biome]
+command = "bunx"
+options = ["@biomejs/biome", "format", "--write"]
+includes = ["*.js", "*.jsx", "*.ts", "*.tsx", "*.css", "*.html"]

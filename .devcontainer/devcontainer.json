@@ -1,10 +1,12 @@
 {
-  "name": "vsc-quick-download-images",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "name": "vsc-firefox-addon-quick-download-images",
+  "image": "aazw/devcontainers-devbox-js:1",
   "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "enableNonRootDocker": "true",
+      "moby": "true"
+    }
   },
   "customizations": {
     "vscode": {
@@ -12,7 +14,9 @@
         "emeraldwalk.runonsave",
         "ms-azuretools.vscode-containers",
         "ms-azuretools.vscode-docker",
-        "biomejs.biome"
+        "tamasfe.even-better-toml",
+        "anthropic.claude-code",
+        "openai.chatgpt"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash"
@@ -31,14 +35,11 @@
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
     "TZ": "Asia/Tokyo"
   },
-  "containerEnv": {
-    // "LANG": "ja_JP.UTF-8",
-    // "LC_MESSAGES": "C"
-  },
   "runArgs": [
     "--name",
-    "vsc-quick-download-images",
+    "vsc-firefox-addon-quick-download-images",
     "--add-host",
     "host.docker.internal:host-gateway"
-  ]
+  ],
+  "postAttachCommand": "bun install"
 }

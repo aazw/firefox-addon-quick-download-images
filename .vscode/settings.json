@@ -1,76 +1,16 @@
 {
+  "editor.wordWrap": "off",
+  "[markdown]": {
+    "editor.wordWrap": "off"
+  },
   "editor.formatOnSave": false,
   "emeraldwalk.runonsave": {
     "commands": [
       {
-        // .prettierrcのフォーマット
-        "match": "\\.prettierrc$",
-        "cmd": "prettier -w \"${file}\""
-      },
-      {
-        // .prettierignoreのフォーマット
-        "match": "\\.prettierignore$",
-        "cmd": "prettier -w \"${file}\""
-      },
-      {
-        // Dcokerfileのフォーマット
-        "match": "\\bDockerfile$",
-        "cmd": "dockerfmt -n -w \"${file}\""
-      },
-      {
-        // シェルスクリプトのフォーマット
-        "match": "\\.sh$",
-        "cmd": "shfmt -w \"${file}\""
-      },
-      {
-        // YAMLのフォーマット
-        "match": "\\.ya?ml$",
-        "cmd": "prettier -w \"${file}\""
-      },
-      {
-        // JSONのフォーマット
-        "match": "\\.json$",
-        "cmd": "prettier -w \"${file}\""
-      },
-      {
-        // HTMLのフォーマット
-        "match": "\\.html$",
-        "cmd": "prettier -w \"${file}\""
-      },
-      {
-        // JavaScriptのフォーマット
-        "match": "\\.js$",
-        "cmd": "prettier -w \"${file}\""
-      },
-      {
-        // CSSのフォーマット
-        "match": "\\.css$",
-        "cmd": "prettier -w \"${file}\""
+        // treefmt側でフォーマッタを選択する
+        "match": ".*",
+        "cmd": "treefmt \"${file}\""
       }
     ]
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
-  },
-  "[jsx]": {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
-  },
-  "[tsx]": {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
-  },
-  "[css]": {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
-  },
-  "[html]": {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
   }
 }
