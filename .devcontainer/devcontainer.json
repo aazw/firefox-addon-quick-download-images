@@ -30,10 +30,12 @@
       "type": "bind"
     }
   ],
+  "containerUser": "root", // コンテナ起動時・初期化処理のユーザ. docker psできるようにするために必要
   "remoteUser": "vscode",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
-    "TZ": "Asia/Tokyo"
+    "TZ": "Asia/Tokyo",
+    "TASK_X_ENV_PRECEDENCE": "1"
   },
   "runArgs": [
     "--name",
