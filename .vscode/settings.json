@@ -1,9 +1,53 @@
 {
+  // VSCodeのエクスプローラーが重くなる対策 その1
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    // git
+    "**/.git": true,
+    // devbox
+    "**/.devbox": true
+  },
+  // VSCodeのエクスプローラーが重くなる対策 その2
+  "files.watcherExclude": {
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    // git
+    "**/.git": true,
+    // devbox
+    "**/.devbox": true,
+    // claude home
+    "**/.claude-home-cache": true
+  },
+  // VSCodeのエクスプローラーが重くなる対策 その3
+  "search.exclude": {
+    // git
+    "**/.git/**": true,
+    // devbox
+    "**/.devbox/**": true,
+    // claude
+    "**/.claude-home-cache/**": true,
+    // codex
+    "**/.codex/**": true,
+    // node
+    "**/node_modules/**": true
+  },
+  // 拡張子との関連付け
+  "files.associations": {
+    "devbox.json": "jsonc",
+    "devbox.lock": "jsonc",
+    ".yamlfmt": "yaml"
+  },
+  // 折り返し無効化
   "editor.wordWrap": "off",
+  // Markdown設定
   "[markdown]": {
+    // Markdownの折り返し無効化
     "editor.wordWrap": "off"
   },
+  // VSCodeによる保存時のフォーマット無効化
   "editor.formatOnSave": false,
+  // runonsaveの設定
   "emeraldwalk.runonsave": {
     "commands": [
       {

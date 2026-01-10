@@ -1,0 +1,7 @@
+formatter:
+  # 空行を1行に圧縮 (この定義が無いと空行自体圧縮削除される)
+  retain_line_breaks_single: true
+
+  # <<: などアンカー・エイリアス利用時、 !!merge みたいなタグを付与しないようにする設定
+  drop_merge_tag: true
+

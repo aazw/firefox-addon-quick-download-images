@@ -11,7 +11,38 @@
         "panel": "new"
       },
       "options": {
-        "cwd": "${workspaceFolder}"
+        "cwd": "${workspaceFolder}",
+        "env": {}
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Init project",
+      "type": "shell",
+      "command": "task init",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {}
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Format files",
+      "type": "shell",
+      "command": "task fmt",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {}
       },
       "problemMatcher": []
     },
@@ -25,7 +56,8 @@
         "panel": "new"
       },
       "options": {
-        "cwd": "${workspaceFolder}"
+        "cwd": "${workspaceFolder}",
+        "env": {}
       },
       "problemMatcher": []
     }

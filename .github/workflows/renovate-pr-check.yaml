@@ -53,7 +53,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            
+
             # 1. 変更をコミット
             git commit -am "chore: format renovate.json"
 

@@ -1,6 +1,6 @@
 {
-  "name": "vsc-firefox-addon-quick-download-images",
-  "image": "aazw/devcontainers-devbox-js:1",
+  "name": "vsc-firefox-addon-quick-download-images-${localWorkspaceFolderBasename}-${devcontainerId}",
+  "image": "aazw/devcontainers-devbox-js:4",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "version": "latest",
@@ -23,9 +23,11 @@
       }
     }
   },
+  // "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspaces,type=bind,consistency=cached",
+  // "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "mounts": [
     {
-      "source": "${localWorkspaceFolder}/.claude",
+      "source": "${localWorkspaceFolder}/.claude-home-cache",
       "target": "/home/vscode/.claude",
       "type": "bind"
     }
@@ -39,9 +41,9 @@
   },
   "runArgs": [
     "--name",
-    "vsc-firefox-addon-quick-download-images",
+    "vsc-firefox-addon-quick-download-images-${localWorkspaceFolderBasename}-${devcontainerId}",
     "--add-host",
     "host.docker.internal:host-gateway"
   ],
-  "postAttachCommand": "bun install"
+  "postAttachCommand": "task init"
 }

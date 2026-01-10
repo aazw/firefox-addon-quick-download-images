@@ -4,79 +4,79 @@
 
 // バックグラウンドスクリプトでのダウンロード処理
 const download = async (message) => {
-  if (Object.keys(message).length === 0) return;
+	if (Object.keys(message).length === 0) return;
 
-  let filename = null;
+	let filename = null;
 
-  // URLからファイル名取得
-  const urlPath = new URL(message.url).pathname;
-  const urlPathParts = urlPath.split("/");
-  filename = urlPathParts[urlPathParts.length - 1];
+	// URLからファイル名取得
+	const urlPath = new URL(message.url).pathname;
+	const urlPathParts = urlPath.split("/");
+	filename = urlPathParts[urlPathParts.length - 1];
 
-  // ファイル名からベース名取得
-  const filenameParts = filename.split(".");
-  const extension = filenameParts.pop();
-  const basename = decodeURI(filenameParts.join("."))
-    .replace(/[\/:\\\^`\|]/g, "_")
-    .replace(/ *_+ */g, "_")
-    .replace("?", "_");
+	// ファイル名からベース名取得
+	const filenameParts = filename.split(".");
+	const extension = filenameParts.pop();
+	const basename = decodeURI(filenameParts.join("."))
+		.replace(/[\/:\\\^`\|]/g, "_")
+		.replace(/ *_+ */g, "_")
+		.replace("?", "_");
 
-  // ベース名にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
-  if (new RegExp("[a-zA-Z0-9\-_]", "g").exec(basename)) {
-    // ページタイトルをファイルパスにできるよう正規化
-    // https://stackoverflow.com/questions/54804674/regex-remove-special-characters-in-filename-except-extension
-    let title = message.documentTitle
-      .replace(/[\/:\\\^`\|]/g, "_")
-      .replace(/ *_+ */g, "_")
-      .replace("?", "_");
+	// ベース名にページタイトルが含まれているかどうかを、英数字のみのファイル名かどうかで判断
+	if (new RegExp("[a-zA-Z0-9\-_]", "g").exec(basename)) {
+		// ページタイトルをファイルパスにできるよう正規化
+		// https://stackoverflow.com/questions/54804674/regex-remove-special-characters-in-filename-except-extension
+		let title = message.documentTitle
+			.replace(/[\/:\\\^`\|]/g, "_")
+			.replace(/ *_+ */g, "_")
+			.replace("?", "_");
 
-    // ファイル名長くなりすぎて保存できなくなるのに対応. ページタイトル30文字以上切り捨て
-    if (title.length > 30) {
-      title = title.substring(0, 30);
-    }
+		// ファイル名長くなりすぎて保存できなくなるのに対応. ページタイトル30文字以上切り捨て
+		if (title.length > 30) {
+			title = title.substring(0, 30);
+		}
 
-    // ファイル名にページタイトルを追加
-    filename = title.trim() + "_" + basename.trim() + "." + extension;
-  }
+		// ファイル名にページタイトルを追加
+		filename = title.trim() + "_" + basename.trim() + "." + extension;
+	}
 
-  // Twitter Web向け設定
-  const urlParser = new URL(message.url);
-  if (urlParser.searchParams.has("format")) {
-    let format = urlParser.searchParams.get("format");
-    let splited = urlParser.pathname.split("/");
-    filename = splited[splited.length - 1] + "." + format;
-  }
+	// Twitter Web向け設定
+	const urlParser = new URL(message.url);
+	if (urlParser.searchParams.has("format")) {
+		let format = urlParser.searchParams.get("format");
+		let splited = urlParser.pathname.split("/");
+		filename = splited[splited.length - 1] + "." + format;
+	}
 
-  // リトライ時の待機処理
-  const sleep = (waitTime) =>
-    new Promise((resolve) => setTimeout(resolve, waitTime));
+	// リトライ時の待機処理
+	const sleep = (waitTime) =>
+		new Promise((resolve) => setTimeout(resolve, waitTime));
 
-  // 謎の50msまち. 意味ないのなら消す
-  await sleep(50);
+	// 謎の50msまち. 意味ないのなら消す
+	await sleep(50);
 
-  // リトライカウント
-  const maxRetryCount = 10;
+	// リトライカウント
+	const maxRetryCount = 10;
 
-  // ダウンロード with リトライ
-  for (let retryCount = 0; retryCount < maxRetryCount; retryCount++) {
-    try {
-      console.log(`downloading: ${filename} from ${message.url}`);
-      const downloading = await browser.downloads.download({
-        url: message.url,
-        filename: filename,
-        method: "GET",
-        conflictAction: "uniquify",
-      });
-      console.log(`downloaded: ${filename} from ${message.url}`);
+	// ダウンロード with リトライ
+	for (let retryCount = 0; retryCount < maxRetryCount; retryCount++) {
+		try {
+			console.log(`downloading: ${filename} from ${message.url}`);
+			const downloading = await browser.downloads.download({
+				url: message.url,
+				filename: filename,
+				method: "GET",
+				conflictAction: "uniquify",
+			});
+			console.log(`downloaded: ${filename} from ${message.url}`);
 
-      // リトライループの正常終了
-      break;
-    } catch (error) {
-      // リトライ前の待機
-      console.log(error);
-      await sleep(50);
-    }
-  }
+			// リトライループの正常終了
+			break;
+		} catch (error) {
+			// リトライ前の待機
+			console.log(error);
+			await sleep(50);
+		}
+	}
 };
 
 // コンテンツスクリプトからのメッセージの受取り

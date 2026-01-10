@@ -14,8 +14,27 @@ tasks:
   remove_system_files:
     dir: "{{ .TASKFILE_DIR }}"
     cmds:
-      - find . -name ".DS_Store" -delete -print
+      - find . -name ".DS_Store" -type f -delete -print
+      - find . -name "core" -type f -delete -print
+      - find . -name "node_modules" -type d -print -exec rm -rf {} +
     silent: true
+
+  init:
+    dir: "{{ .TASKFILE_DIR }}"
+    cmds:
+      # remove system files
+      - task remove_system_files
+      # キャッシュクリア (skillsの読み込み時にcacheが悪さすることが多い)
+      - rm -rf ./.claude-home-cache/plugins/cache/*
+      # bun
+      - bun install
+    silent: false
+
+  fmt:
+    dir: "{{ .TASKFILE_DIR }}"
+    cmds:
+      - treefmt
+    silent: false
 
   build:
     dir: "{{ .TASKFILE_DIR }}"

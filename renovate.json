@@ -2,11 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":configMigration"],
   "labels": ["Renovate"],
+  "assignees": ["aazw"],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 10,
-  "assignees": ["aazw"],
-  "customManagers": [],
+  "minimumReleaseAge": "7 days",
+  "ignorePaths": [],
   "packageRules": [
+    // Dockerfile のベースイメージ更新は最低経過時間を無効化
+    {
+      "matchManagers": ["dockerfile", "devcontainer"],
+      "matchPackageNames": ["*"],
+      "minimumReleaseAge": null
+    },
     {
       "matchFileNames": [".devcontainer/**"],
       "groupName": "devcontainer"
