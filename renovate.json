@@ -6,6 +6,7 @@
   "prHourlyLimit": 0,
   "prConcurrentLimit": 10,
   "minimumReleaseAge": "7 days",
+  "customManagers": [],
   "ignorePaths": [],
   "packageRules": [
     // Dockerfile のベースイメージ更新は最低経過時間を無効化
