@@ -244,8 +244,8 @@ core.*
 
 # Claude 関連：生成データは除外し、設定ファイル／スキル定義のみを管理対象に含める
 .claude/*
-!.cluade/settings.json
-!.cluade/skills/
+!.claude/settings.json
+!.claude/skills/
 
 # Claude Code セッションキャッシュ：ホスト側の ~/.claude/* を .claude-home-cache/ にマウントして利用（.gitkeep は保持）
 .claude-home-cache/*
