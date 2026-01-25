@@ -27,8 +27,15 @@
   // "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "mounts": [
     {
+      // ~/.claude に保存される claude code のセッションを永続化 (DevContainer再作成時など)
       "source": "${localWorkspaceFolder}/.claude-home-cache",
       "target": "/home/vscode/.claude",
+      "type": "bind"
+    },
+    {
+      // ~/.codex に保存される codex のセッションを永続化 (DevContainer再作成時など)
+      "source": "${localWorkspaceFolder}/.codex-home-cache",
+      "target": "/home/vscode/.codex",
       "type": "bind"
     }
   ],
