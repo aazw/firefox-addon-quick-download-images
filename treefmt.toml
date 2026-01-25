@@ -2,28 +2,34 @@
 command = "prettier"
 options = ["-w"]
 includes = ["*.json"]
+excludes = []
 
 [formatter.yaml]
 command = "yamlfmt"
 options = []
 includes = ["*.yaml", "*.yml", ".yamlfmt"]
+excludes = []
 
 [formatter.dockerfmt]
 command = "dockerfmt"
 options = ["-n", "-w"]
 includes = ["**/Dockerfile"]
+excludes = []
 
 [formatter.shfmt]
 command = "shfmt"
 options = ["-w"]
 includes = ["*.sh"]
+excludes = []
 
 [formatter.taplo]
 command = "taplo"
 options = ["fmt"]
 includes = ["*.toml"]
+excludes = []
 
 [formatter.biome]
 command = "bunx"
 options = ["@biomejs/biome", "format", "--write"]
 includes = ["*.js", "*.jsx", "*.ts", "*.tsx", "*.css", "*.html"]
+excludes = []
