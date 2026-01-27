@@ -1,6 +1,7 @@
 {
   "name": "vsc-firefox-addon-quick-download-images-${localWorkspaceFolderBasename}-${devcontainerId}",
-  "image": "aazw/devcontainers-devbox-js:4",
+  "image": "aazw/devcontainers-devbox-js:5",
+  "initializeCommand": "bash -lc 'mkdir -p \"${localWorkspaceFolder}/.devcontainer/.state/claude\" \"${localWorkspaceFolder}/.devcontainer/.state/codex\"'",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "version": "latest",
@@ -28,18 +29,19 @@
   "mounts": [
     {
       // ~/.claude に保存される claude code のセッションを永続化 (DevContainer再作成時など)
-      "source": "${localWorkspaceFolder}/.claude-home-cache",
+      "source": "${localWorkspaceFolder}/.devcontainer/.state/claude",
       "target": "/home/vscode/.claude",
       "type": "bind"
     },
     {
       // ~/.codex に保存される codex のセッションを永続化 (DevContainer再作成時など)
-      "source": "${localWorkspaceFolder}/.codex-home-cache",
+      "source": "${localWorkspaceFolder}/.devcontainer/.state/codex",
       "target": "/home/vscode/.codex",
       "type": "bind"
     }
   ],
-  "containerUser": "root", // コンテナ起動時・初期化処理のユーザ. docker psできるようにするために必要
+  // containerUser は、コンテナ起動時・初期化処理のユーザ. docker psできるようにするために必要
+  "containerUser": "root",
   "remoteUser": "vscode",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",

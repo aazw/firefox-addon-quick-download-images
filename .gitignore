@@ -247,18 +247,15 @@ core.*
 !.claude/settings.json
 !.claude/skills/
 
-# Claude Code セッションキャッシュ：ホスト側の ~/.claude/* を .claude-home-cache/ にマウントして利用（.gitkeep は保持）
-.claude-home-cache/*
-!.claude-home-cache/.gitkeep
-
 # Codex 関連：生成データは除外し、設定ファイル／スキル定義のみを管理対象に含める
 .codex/*
 !.codex/config.toml
 !.codex/skills/
 
-# Codex セッションキャッシュ：ホスト側の ~/.codex/* を .codex-home-cache/ にマウントして利用（.gitkeep は保持）
-.codex-home-cache/*
-!.codex-home-cache/.gitkeep
+# DevContainer利用時のセッション/キャッシュ (完全にローカル)
+.devcontainer/.state
+.devcontainer/.state/
+.devcontainer/.state/*
 
 # builds
 *.zip

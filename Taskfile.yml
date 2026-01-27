@@ -25,7 +25,7 @@ tasks:
       # remove system files
       - task remove_system_files
       # キャッシュクリア (skillsの読み込み時にcacheが悪さすることが多い)
-      - rm -rf ./.claude-home-cache/plugins/cache/*
+      - rm -rf ./.devcontainer/.state/claude/plugins/cache/*
       # bun
       - bun install
     silent: false

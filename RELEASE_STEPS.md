@@ -4,7 +4,7 @@
 1. `./addon/manifest.json` のバージョンをインクリメントする
 1. `./script/build.sh` を実行する
 1. Mozilla アドオン開発者センターの『自分のアドオン』にアクセスする  
-   https://addons.mozilla.org/ja/developers/addons
+   <https://addons.mozilla.org/ja/developers/addons>
 1. 『Quick Download Images 』にアクセス
 1. 『新バージョンをアップロード 』にアクセス
 1. ビルドした`.xpi`ファイルをアップロード
@@ -21,7 +21,7 @@
     * 冒頭`v`は不要
 1. タグをoriginにpushする
 1. GitHubのReleasesにアクセスする  
-   https://github.com/aazw/firefox-addon-quick-download-images/releases
+   <https://github.com/aazw/firefox-addon-quick-download-images/releases>
 1. 『Draft a new release』にアクセスする
 1. 『Choose a tag』で先程pushしたタグを選択する
 1. 『Generate release notes』でリリースノートを生成する
