@@ -33,7 +33,7 @@ tasks:
   fmt:
     dir: "{{ .TASKFILE_DIR }}"
     cmds:
-      - treefmt -vv
+      - treefmt -vv --no-cache
     silent: false
 
   build:
