@@ -9,8 +9,8 @@
   "customManagers": [],
   "ignorePaths": [],
   "packageRules": [
-    // Dockerfile のベースイメージ更新は最低経過時間を無効化
     {
+      // Dockerfile のベースイメージ更新は最低経過時間を無効化
       "matchManagers": ["dockerfile", "devcontainer"],
       "matchPackageNames": ["*"],
       "minimumReleaseAge": null
