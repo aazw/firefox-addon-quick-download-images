@@ -1,4 +1,5 @@
 {
+  // ${localWorkspaceFolderBasename} はgit worktreeを同階層同列運用する場合に操作中の対象の識別ができない問題に対応するためのもの
   "name": "vsc-firefox-addon-quick-download-images-${localWorkspaceFolderBasename}-${devcontainerId}",
   "image": "aazw/devcontainers-devbox-js:5",
   "initializeCommand": "bash -lc 'mkdir -p \"${localWorkspaceFolder}/.devcontainer/.state/claude\" \"${localWorkspaceFolder}/.devcontainer/.state/codex\"'",
@@ -24,8 +25,9 @@
       }
     }
   },
+  // git worktree の同階層同列運用をDevContainer内でも利用可能する場合は有効化する (git worktree add --relative-paths 運用前提)
   // "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspaces,type=bind,consistency=cached",
-  // "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "mounts": [
     {
       // ~/.claude に保存される claude code のセッションを永続化 (DevContainer再作成時など)
