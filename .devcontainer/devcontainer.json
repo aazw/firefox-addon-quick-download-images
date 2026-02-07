@@ -1,7 +1,7 @@
 {
   // ${localWorkspaceFolderBasename} はgit worktreeを同階層同列運用する場合に操作中の対象の識別ができない問題に対応するためのもの
   "name": "vsc-firefox-addon-quick-download-images-${localWorkspaceFolderBasename}-${devcontainerId}",
-  "image": "aazw/devcontainers-devbox-js:5",
+  "image": "aazw/devcontainers-devbox-js:6",
   "initializeCommand": "bash -lc 'mkdir -p \"${localWorkspaceFolder}/.devcontainer/.state/claude\" \"${localWorkspaceFolder}/.devcontainer/.state/codex\"'",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
